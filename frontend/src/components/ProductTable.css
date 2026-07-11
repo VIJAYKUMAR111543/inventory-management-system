@@ -1,0 +1,172 @@
+.table-card{
+    background:#FFFFFF;
+    border:1px solid #E2E8F0;
+    border-radius:14px;
+    padding:24px;
+    box-shadow:0 2px 8px rgba(15,23,42,.05);
+}
+
+.table-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    padding-bottom:14px;
+    border-bottom:1px solid #E2E8F0;
+}
+
+.table-header h3{
+    font-size:24px;
+    color:#1E293B;
+    font-weight:600;
+}
+
+.product-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.product-table thead{
+
+    background:#F8FAFC;
+
+}
+
+.product-table th{
+
+    padding:16px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#64748B;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+}
+
+.product-table td{
+
+    padding:16px;
+
+    border-top:1px solid #E2E8F0;
+
+    color:#334155;
+
+}
+
+.product-table tbody tr{
+
+    transition:.2s;
+
+}
+
+.product-table tbody tr:hover{
+
+    background:#F8FAFC;
+
+}
+
+.action-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.edit-btn,
+.delete-btn{
+
+    border:none;
+
+    padding:8px 16px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-weight:500;
+
+    transition:.2s;
+
+}
+
+.edit-btn{
+
+    background:#2563EB;
+
+}
+
+.edit-btn:hover{
+
+    background:#1D4ED8;
+
+}
+
+.delete-btn{
+
+    background:#EF4444;
+
+}
+
+.delete-btn:hover{
+
+    background:#DC2626;
+
+}
+
+.stock-badge{
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.in-stock{
+
+    background:#DCFCE7;
+
+    color:#15803D;
+
+}
+
+.low-stock{
+
+    background:#FEF3C7;
+
+    color:#B45309;
+
+}
+
+.out-stock{
+
+    background:#FEE2E2;
+
+    color:#B91C1C;
+
+}
+
+.empty-table{
+
+    text-align:center;
+
+    padding:30px;
+
+    color:#64748B;
+
+}

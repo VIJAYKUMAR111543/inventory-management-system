@@ -27,21 +27,25 @@ function SearchBar({ products, setFilteredProducts }) {
 
   return (
 
-    <div className="search-box">
+    <div className="search-container">
 
-      <input
-        type="text"
-        placeholder="Search by ID, Name or Description"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <div className="search-box">
 
-      <button
-        className="search-btn"
-        onClick={handleSearch}
-      >
-        Search
-      </button>
+        <input
+          type="text"
+          placeholder="Search by ID, Name or Description..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <button
+          className="search-btn"
+          onClick={handleSearch}
+        >
+          Search
+        </button>
+
+      </div>
 
     </div>
 

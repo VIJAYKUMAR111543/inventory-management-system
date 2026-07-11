@@ -1,0 +1,35 @@
+.navbar{
+    background:#ffffff;
+    border-bottom:1px solid #E2E8F0;
+    padding:18px 30px;
+}
+
+.navbar-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.logo-box{
+    width:50px;
+    height:50px;
+    border-radius:12px;
+    background:#2563EB;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:24px;
+}
+
+.navbar h1{
+    font-size:24px;
+    font-weight:600;
+    color:#1E293B;
+}
+
+.navbar p{
+    margin-top:4px;
+    color:#64748B;
+    font-size:14px;
+}

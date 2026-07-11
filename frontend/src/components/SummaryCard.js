@@ -1,14 +1,26 @@
+import "./SummaryCard.css";
+
 function SummaryCard({ total }) {
 
-  return (
+    return (
 
-    <div className="summary-card">
+        <div className="summary-card">
 
-      <h2>Total Products : {total}</h2>
+            <div className="summary-title">
 
-    </div>
+                Total Products
 
-  );
+            </div>
+
+            <div className="summary-value">
+
+                {total}
+
+            </div>
+
+        </div>
+
+    );
 
 }
 

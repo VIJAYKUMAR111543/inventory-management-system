@@ -1,107 +1,185 @@
 import axios from "axios";
+import { toast } from "react-toastify";
+import "./ProductTable.css";
 
 function ProductTable({
-  products,
-  reloadProducts,
-  setSelectedProduct,
+    products,
+    reloadProducts,
+    setSelectedProduct,
 }) {
 
-  const deleteProduct = async (id) => {
+    const deleteProduct = async (id) => {
 
-    try {
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this product?"
+        );
 
-      await axios.delete(`/products?id=${id}`);
+        if (!confirmDelete) {
+            return;
+        }
 
-      reloadProducts();
+        try {
 
-    } catch (err) {
+            await axios.delete(`/products?id=${id}`);
 
-      console.log(err);
+            reloadProducts();
 
-      alert("Unable to delete product");
+            toast.success("Product Deleted Successfully");
 
-    }
+        } catch (err) {
 
-  };
+            console.log(err);
 
-  return (
+            toast.error("Unable to delete product");
 
-    <div className="table-card">
+        }
 
-      <div className="card-header">
-        <h3>Products</h3>
-      </div>
+    };
 
-      <table className="product-table">
+    const getStockStatus = (quantity) => {
 
-        <thead>
+        if (quantity === 0) {
+            return "Out of Stock";
+        }
 
-          <tr>
-            <th>ID</th>
-            <th>NAME</th>
-            <th>DESCRIPTION</th>
-            <th>PRICE</th>
-            <th>QUANTITY</th>
-            <th>ACTIONS</th>
-          </tr>
+        if (quantity <= 5) {
+            return "Low Stock";
+        }
 
-        </thead>
+        return "In Stock";
 
-        <tbody>
+    };
 
-          {products.length > 0 ? (
+    const getStatusClass = (quantity) => {
 
-            products.map((product) => (
+        if (quantity === 0) {
+            return "stock-badge out-stock";
+        }
 
-              <tr key={product.id}>
+        if (quantity <= 5) {
+            return "stock-badge low-stock";
+        }
 
-                <td>{product.id}</td>
-                <td>{product.name}</td>
-                <td>{product.description}</td>
-                <td>{product.price}</td>
-                <td>{product.quantity}</td>
+        return "stock-badge in-stock";
 
-                <td>
+    };
 
-                  <button
-                    className="edit-btn"
-                    onClick={() => setSelectedProduct(product)}
-                  >
-                    Edit
-                  </button>
+    return (
 
-                  <button
-                    className="delete-btn"
-                    onClick={() => deleteProduct(product.id)}
-                  >
-                    Delete
-                  </button>
+        <div className="table-card">
 
-                </td>
+            <div className="table-header">
 
-              </tr>
+                <h3>Products</h3>
 
-            ))
+            </div>
 
-          ) : (
+            <table className="product-table">
 
-            <tr>
+                <thead>
 
-              <td colSpan="6" style={{ textAlign: "center" }}>
-                No Products Found
-              </td>
+                    <tr>
 
-            </tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Actions</th>
 
-          )}
+                    </tr>
 
-        </tbody>
+                </thead>
 
-      </table>
+                <tbody>
 
-    </div>
+                    {products.length > 0 ? (
 
-  );
+                        products.map((product) => (
+
+                            <tr key={product.id}>
+
+                                <td>{product.id}</td>
+
+                                <td>{product.name}</td>
+
+                                <td>{product.description}</td>
+
+                                <td>
+                                    ₹ {Number(product.price).toFixed(2)}
+                                </td>
+
+                                <td>{product.quantity}</td>
+
+                                <td>
+
+                                    <span className={getStatusClass(product.quantity)}>
+
+                                        {getStockStatus(product.quantity)}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div className="action-buttons">
+
+                                        <button
+                                            className="edit-btn"
+                                            onClick={() => setSelectedProduct(product)}
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            className="delete-btn"
+                                            onClick={() => deleteProduct(product.id)}
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        ))
+
+                    ) : (
+
+                        <tr>
+
+                            <td
+                                className="empty-table"
+                                colSpan="7"
+                            >
+
+                                <div className="empty-state">
+
+                                    <div className="empty-icon">📦</div>
+
+                                    <h3>No Products Found</h3>
+
+                                    <p>Start by adding your first product.</p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    )}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    );
 
 }
 

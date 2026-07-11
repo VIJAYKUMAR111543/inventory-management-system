@@ -1,0 +1,47 @@
+.summary-card{
+
+    background:#ffffff;
+
+    border:1px solid #E2E8F0;
+
+    border-radius:14px;
+
+    padding:20px 28px;
+
+    min-width:230px;
+
+    box-shadow:0 2px 8px rgba(15,23,42,.05);
+
+    transition:.25s;
+
+}
+
+.summary-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 6px 14px rgba(15,23,42,.08);
+
+}
+
+.summary-title{
+
+    color:#64748B;
+
+    font-size:14px;
+
+    margin-bottom:10px;
+
+    font-weight:500;
+
+}
+
+.summary-value{
+
+    font-size:36px;
+
+    font-weight:700;
+
+    color:#2563EB;
+
+}

@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import "./styles/App.css";
+import Navbar from "./components/Navbar";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import SummaryCard from "./components/SummaryCard";
 import SearchBar from "./components/SearchBar";
@@ -40,48 +44,76 @@ function App() {
 
   return (
 
-    <div className="app-container">
+    <>
 
-      <div className="header">
+      <Navbar />
 
-        <SummaryCard
-          total={filteredProducts.length}
-        />
+      <div className="app-container">
 
-        <SearchBar
-          products={products}
-          setFilteredProducts={setFilteredProducts}
-        />
+        <div className="dashboard-header">
 
-      </div>
+          <div>
 
-      <div className="main-content">
+            <h2>Inventory Dashboard</h2>
 
-        <div className="left-side">
+            <p>Manage your products from one place.</p>
 
-          <ProductForm
-            reloadProducts={loadProducts}
-            selectedProduct={selectedProduct}
-            setSelectedProduct={setSelectedProduct}
+          </div>
+
+          <ToastContainer
+        position="top-right"
+        autoClose={2500}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+    />
+
+        </div>
+
+        <div className="header">
+
+          <SummaryCard
+            total={filteredProducts.length}
           />
 
-          <ProductTable
-            products={filteredProducts}
-            reloadProducts={loadProducts}
-            setSelectedProduct={setSelectedProduct}
+          <SearchBar
+            products={products}
+            setFilteredProducts={setFilteredProducts}
           />
 
         </div>
 
-        <div className="right-side">
+        <div className="main-content">
 
-          <Advertisement />
+          <div className="left-side">
+
+            <ProductForm
+              reloadProducts={loadProducts}
+              selectedProduct={selectedProduct}
+              setSelectedProduct={setSelectedProduct}
+            />
+
+            <ProductTable
+              products={filteredProducts}
+              reloadProducts={loadProducts}
+              setSelectedProduct={setSelectedProduct}
+            />
+
+          </div>
+
+          <div className="right-side">
+
+            <Advertisement />
+
+          </div>
 
         </div>
 
       </div>
 
-    </div>
+    </>
 
   );
 

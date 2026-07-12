@@ -131,19 +131,19 @@ npm start
 
 ## Add Product
 
-![Add Product](Screenshots/AddProducts.png.)
+![Add Product](Screenshots/AddProducts.png)
 
 ---
 
 ## Update Product
 
-![Update Product](Screenshots/UpdateProducts.png.png)
+![Update Product](Screenshots/UpdateProducts.png)
 
 ---
 
 ## Product List
 
-![Search Product](Screenshots/ProductList.png.png)
+![Search Product](Screenshots/ProductList.png)
 
 ---
 

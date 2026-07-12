@@ -80,10 +80,17 @@ inventory-management-system
 │   │
 │   └── package.json
 │
+├── Screenshots
+│   ├── Dashboard.png
+│   ├── AddProducts.png
+│   ├── ProductList.png
+│   └── UpdateProducts.png
+│
 ├── database.py
 ├── database_models.py
 ├── main.py
 ├── models.py
+├── .gitignore
 └── README.md
 ```
 

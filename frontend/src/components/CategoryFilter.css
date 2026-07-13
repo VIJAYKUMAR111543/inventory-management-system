@@ -1,0 +1,9 @@
+.category-filter {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    min-width: 180px;
+    margin-right: 10px;
+    background: white;
+    cursor: pointer;
+}

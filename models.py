@@ -6,6 +6,7 @@ class Product(BaseModel):
     description: str
     price: float
     quantity: int
+    category: str
 
     class Config:
         from_attributes = True

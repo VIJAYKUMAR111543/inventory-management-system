@@ -1,0 +1,15 @@
+.sort-filter{
+
+    min-width:180px;
+    padding:10px 14px;
+
+    border:1px solid #dcdcdc;
+    border-radius:8px;
+
+    background:#fff;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+}

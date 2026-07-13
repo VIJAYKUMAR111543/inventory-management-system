@@ -1,55 +1,62 @@
-import { useState } from "react";
+import { useEffect } from "react";
 
-function SearchBar({ products, setFilteredProducts }) {
+function SearchBar({
+    searchText,
+    setSearchText,
+    setSelectedCategory
+}) {
 
-  const [search, setSearch] = useState("");
+    useEffect(() => {
 
-  const handleSearch = () => {
+        if (searchText.trim() !== "") {
 
-    if (search.trim() === "") {
-      setFilteredProducts(products);
-      return;
-    }
+            setSelectedCategory("All");
 
-    const filtered = products.filter((product) => {
+        }
 
-      return (
-        product.id.toString().includes(search) ||
-        product.name.toLowerCase().includes(search.toLowerCase()) ||
-        product.description.toLowerCase().includes(search.toLowerCase())
-      );
+    }, [searchText, setSelectedCategory]);
 
-    });
+    const handleSearchClick = () => {
 
-    setFilteredProducts(filtered);
+        const table = document.getElementById("product-table");
 
-  };
+        if (table) {
 
-  return (
+            table.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
 
-    <div className="search-container">
+        }
 
-      <div className="search-box">
+    };
 
-        <input
-          type="text"
-          placeholder="Search by ID, Name or Description..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+    return (
 
-        <button
-          className="search-btn"
-          onClick={handleSearch}
-        >
-          Search
-        </button>
+        <div className="search-container">
 
-      </div>
+            <div className="search-box">
 
-    </div>
+                <input
+                    type="text"
+                    placeholder="Search by ID, Name or Description..."
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
 
-  );
+                <button
+                    type="button"
+                    className="search-btn"
+                    onClick={handleSearchClick}
+                >
+                    Search
+                </button>
+
+            </div>
+
+        </div>
+
+    );
 
 }
 

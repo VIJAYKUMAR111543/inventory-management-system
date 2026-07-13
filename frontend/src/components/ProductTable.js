@@ -6,6 +6,8 @@ function ProductTable({
     products,
     reloadProducts,
     setSelectedProduct,
+    setViewProduct,
+    exportButton,
 }) {
 
     const deleteProduct = async (id) => {
@@ -66,11 +68,16 @@ function ProductTable({
 
     return (
 
-        <div className="table-card">
+        <div
+    className="table-card"
+    id="product-table"
+>
 
             <div className="table-header">
 
                 <h3>Products</h3>
+
+                {exportButton}
 
             </div>
 
@@ -79,9 +86,10 @@ function ProductTable({
                 <thead>
 
                     <tr>
-
+                        <th>Image</th>
                         <th>ID</th>
                         <th>Product</th>
+                        <th>Category</th>
                         <th>Description</th>
                         <th>Price</th>
                         <th>Quantity</th>
@@ -100,9 +108,33 @@ function ProductTable({
 
                             <tr key={product.id}>
 
-                                <td>{product.id}</td>
+    <td>
+
+        {product.image ? (
+
+            <img
+                src={`http://127.0.0.1:8000/uploads/${product.image}`}
+                alt={product.name}
+                className="product-image"
+                onClick={() => setViewProduct(product)}
+                style={{ cursor: "pointer" }}
+            />
+
+        ) : (
+
+            <div className="no-image">
+                No Image
+            </div>
+
+        )}
+
+    </td>
+
+    <td>{product.id}</td>
 
                                 <td>{product.name}</td>
+
+                                <td>{product.category}</td>
 
                                 <td>{product.description}</td>
 
@@ -154,7 +186,7 @@ function ProductTable({
 
                             <td
                                 className="empty-table"
-                                colSpan="7"
+                                colSpan="9"
                             >
 
                                 <div className="empty-state">

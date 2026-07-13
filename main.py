@@ -1,14 +1,25 @@
-from fastapi import FastAPI, Depends
+from email.mime import image
+
+from fastapi import FastAPI, Depends,UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from models import Product
 from database import SessionLocal, engine
 from database_models import Base
 import database_models
 from sqlalchemy.orm import Session
+from fastapi.staticfiles import StaticFiles
+import os
+import shutil
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+UPLOAD_FOLDER = "uploads"
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+app.mount("/uploads", StaticFiles(directory=UPLOAD_FOLDER), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,10 +36,38 @@ def greet():
     return "Hello from the frontend!"
 
 products = [
-    Product(id=1, name="Phone", description="budget Phone", price=99, quantity=10),
-    Product(id=2, name="Laptop", description="gaming laptop", price=999, quantity=5),
-    Product(id=3, name="Tablet", description="10-inch tablet", price=199, quantity=15),
-    Product(id=4, name="Watch", description="smart watch", price=199, quantity=20),
+    Product(
+        id=1,
+        name="Phone",
+        description="budget Phone",
+        price=99,
+        quantity=10,
+        category="Electronics"
+    ),
+    Product(
+        id=2,
+        name="Laptop",
+        description="gaming laptop",
+        price=999,
+        quantity=5,
+        category="Electronics"
+    ),
+    Product(
+        id=3,
+        name="Tablet",
+        description="10-inch tablet",
+        price=199,
+        quantity=15,
+        category="Electronics"
+    ),
+    Product(
+        id=4,
+        name="Watch",
+        description="smart watch",
+        price=199,
+        quantity=20,
+        category="Electronics"
+    ),
 ]
 
 def get_db():
@@ -61,31 +100,156 @@ def get_product_by_id(id: int,db: Session = Depends(get_db)):
     return {"message": "Product not found"}
 
 @app.post("/products")
-def add_product(product: Product,db: Session = Depends(get_db)):
-    db_product = database_models.Product(**product.model_dump())
+async def add_product(
+    id: int = Form(...),
+    name: str = Form(...),
+    description: str = Form(...),
+    price: float = Form(...),
+    quantity: int = Form(...),
+    category: str = Form(...),
+    image: UploadFile = File(None),
+    db: Session = Depends(get_db)
+):
+    image_path = None
+
+    if image:
+
+        MAX_FILE_SIZE = 2 * 1024 * 1024
+
+        image.file.seek(0, 2)
+        file_size = image.file.tell()
+        image.file.seek(0)
+
+        if file_size > MAX_FILE_SIZE:
+            return {
+                "message": "Image size must be less than 2 MB."
+            }
+
+        allowed_extensions = [".jpg", ".jpeg", ".png", ".pjpeg", ".jfif"]
+
+        file_extension = os.path.splitext(image.filename)[1].lower()
+
+        if file_extension not in allowed_extensions:
+            return {
+                "message": "Only JPG, JPEG, PNG and JFIF images are allowed."
+            }
+
+        filename = f"{id}_{image.filename}"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+
+        with open(filepath, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+
+        image_path = filename
+
+    db_product = database_models.Product(
+        id=id,
+        name=name,
+        description=description,
+        price=price,
+        quantity=quantity,
+        category=category,
+        image=image_path
+    )
+
     db.add(db_product)
     db.commit()
+    db.refresh(db_product)
+
     return db_product
 
 @app.put("/products")
-def update_product(id:int,product:Product,db: Session = Depends(get_db)):
-    db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
-    if db_product:
-        db_product.name = product.name
-        db_product.description = product.description
-        db_product.price = product.price
-        db_product.quantity = product.quantity
-        db.commit()
-        return product
-    else:
-        return "No product found"
+async def update_product(
+    id: int,
+    name: str = Form(...),
+    description: str = Form(...),
+    price: float = Form(...),
+    quantity: int = Form(...),
+    category: str = Form(...),
+    image: UploadFile = File(None),
+    db: Session = Depends(get_db)
+):
+    db_product = db.query(database_models.Product).filter(
+        database_models.Product.id == id
+    ).first()
+
+    if not db_product:
+        return {"message": "Product not found"}
+
+    db_product.name = name
+    db_product.description = description
+    db_product.price = price
+    db_product.quantity = quantity
+    db_product.category = category
+
+    if image:
+
+        MAX_FILE_SIZE = 2 * 1024 * 1024
+
+        image.file.seek(0, 2)
+        file_size = image.file.tell()
+        image.file.seek(0)
+
+        if file_size > MAX_FILE_SIZE:
+            return {
+                "message": "Image size must be less than 2 MB."
+            }
+
+        allowed_extensions = [".jpg", ".jpeg", ".png", ".pjpeg", ".jfif"]
+
+        file_extension = os.path.splitext(image.filename)[1].lower()
+
+        if file_extension not in allowed_extensions:
+            return {
+                "message": "Only JPG, JPEG, PNG and JFIF images are allowed."
+            }
+
+        if db_product.image:
+
+            old_image_path = os.path.join(
+                UPLOAD_FOLDER,
+                db_product.image
+            )
+
+            if os.path.exists(old_image_path):
+                os.remove(old_image_path)
+
+        filename = f"{id}_{image.filename}"
+        filepath = os.path.join(
+            UPLOAD_FOLDER,
+            filename
+        )
+
+        with open(filepath, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+
+        db_product.image = filename
+
+    db.commit()
+    db.refresh(db_product)
+
+    return db_product
 
 @app.delete("/products")
-def delete_product(id: int,db: Session = Depends(get_db)):
-    db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
-    if db_product:
-        db.delete(db_product)
-        db.commit()
-        
-    else:
-        return "product not found"
+def delete_product(id: int, db: Session = Depends(get_db)):
+
+    db_product = db.query(database_models.Product).filter(
+        database_models.Product.id == id
+    ).first()
+
+    if not db_product:
+        return {"message": "Product not found"}
+
+    # Delete image file if it exists
+    if db_product.image:
+
+        image_path = os.path.join(UPLOAD_FOLDER, db_product.image)
+
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
+    # Delete product from database
+    db.delete(db_product)
+    db.commit()
+
+    return {"message": "Product deleted successfully"}

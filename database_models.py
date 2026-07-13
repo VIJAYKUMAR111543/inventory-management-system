@@ -10,3 +10,5 @@ class Product(Base):
     description = Column(String(255))
     price = Column(Float)
     quantity = Column(Integer)
+    image = Column(String(255), nullable=True)
+    category = Column(String(100), nullable=False)

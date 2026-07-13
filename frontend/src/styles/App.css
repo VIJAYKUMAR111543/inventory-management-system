@@ -50,7 +50,8 @@ body{
 .search-container{
     display:flex;
     justify-content:flex-end;
-    width:100%;
+    width:auto;
+    margin-left:12px;
 }
 
 .search-box{
@@ -192,4 +193,10 @@ body{
         width:100%;
     }
 
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
 }

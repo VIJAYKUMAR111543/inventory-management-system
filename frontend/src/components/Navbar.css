@@ -33,3 +33,61 @@
     color:#64748B;
     font-size:14px;
 }
+
+.navbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+.user-info{
+
+    text-align:right;
+
+}
+
+.user-info h5{
+
+    margin:0;
+
+    font-size:16px;
+
+    font-weight:600;
+
+}
+
+.user-info span{
+
+    font-size:13px;
+
+    color:#666;
+
+}
+
+.logout-btn{
+
+    background:#ef4444;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+}
+
+.logout-btn:hover{
+
+    background:#dc2626;
+
+}

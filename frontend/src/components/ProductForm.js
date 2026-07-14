@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import api from "../services/api";
 import { toast } from "react-toastify";
 import "./ProductForm.css";
 
@@ -172,7 +172,7 @@ function ProductForm({
 
             if (selectedProduct) {
 
-                await axios.put(`/products?id=${product.id}`, formData, {
+                await api.put(`/products?id=${product.id}`, formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
@@ -182,7 +182,7 @@ function ProductForm({
 
             } else {
 
-                await axios.post("/products", formData, {
+                await api.post("/products", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }

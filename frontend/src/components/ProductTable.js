@@ -1,8 +1,9 @@
-import axios from "axios";
+import api from "../services/api";
 import { toast } from "react-toastify";
 import "./ProductTable.css";
 
 function ProductTable({
+    user,
     products,
     reloadProducts,
     setSelectedProduct,
@@ -22,7 +23,7 @@ function ProductTable({
 
         try {
 
-            await axios.delete(`/products?id=${id}`);
+            await api.delete(`/products?id=${id}`);
 
             reloadProducts();
 
@@ -156,25 +157,40 @@ function ProductTable({
 
                                 <td>
 
-                                    <div className="action-buttons">
+    {user?.role === "ADMIN" ? (
 
-                                        <button
-                                            className="edit-btn"
-                                            onClick={() => setSelectedProduct(product)}
-                                        >
-                                            Edit
-                                        </button>
+        <div className="action-buttons">
 
-                                        <button
-                                            className="delete-btn"
-                                            onClick={() => deleteProduct(product.id)}
-                                        >
-                                            Delete
-                                        </button>
+            <button
+                className="edit-btn"
+                onClick={() => setSelectedProduct(product)}
+            >
+                Edit
+            </button>
 
-                                    </div>
+            <button
+                className="delete-btn"
+                onClick={() => deleteProduct(product.id)}
+            >
+                Delete
+            </button>
 
-                                </td>
+        </div>
+
+    ) : (
+
+        <span
+            style={{
+                color: "#16a34a",
+                fontWeight: "600"
+            }}
+        >
+            View Only
+        </span>
+
+    )}
+
+</td>
 
                             </tr>
 

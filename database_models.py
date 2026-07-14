@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, Boolean
 from database import Base
 
 
@@ -12,3 +12,36 @@ class Product(Base):
     quantity = Column(Integer)
     image = Column(String(255), nullable=True)
     category = Column(String(100), nullable=False)
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    username = Column(
+        String(100),
+        nullable=False
+    )
+
+    email = Column(
+        String(255),
+        unique=True,
+        nullable=False,
+        index=True
+    )
+
+    hashed_password = Column(
+        String(255),
+        nullable=False
+    )
+
+    role = Column(
+        String(20),
+        default="EMPLOYEE"
+    )
+
+    is_active = Column(
+        Boolean,
+        default=True
+    )

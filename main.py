@@ -1,5 +1,7 @@
 from email.mime import image
 
+from auth import router as auth_router
+
 from fastapi import FastAPI, Depends,UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from models import Product
@@ -8,12 +10,21 @@ from database_models import Base
 import database_models
 from sqlalchemy.orm import Session
 from fastapi.staticfiles import StaticFiles
+from users import router as users_router
 import os
 import shutil
+from dependencies import (
+     get_db,
+     require_admin,
+     require_employee_or_admin,
+ )
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.include_router(auth_router)
+app.include_router(users_router)
 
 UPLOAD_FOLDER = "uploads"
 
@@ -70,12 +81,6 @@ products = [
     ),
 ]
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 def init_db():
     db = SessionLocal()
@@ -88,16 +93,36 @@ def init_db():
         db.commit()
     db.close()
 init_db()
+
+from services.auth_service import create_default_admin
+
+db = SessionLocal()
+create_default_admin(db)
+db.close()
+
 @app.get("/products")
-def get_all_products(db: Session = Depends(get_db)):
+
+def get_all_products(
+    current_user=Depends(require_employee_or_admin),
+    db: Session = Depends(get_db)
+):
     return db.query(database_models.Product).all()
 
 @app.get("/product/{id}")
-def get_product_by_id(id: int,db: Session = Depends(get_db)):
-    db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
-    if db_product:
-        return db_product
-    return {"message": "Product not found"}
+
+def get_product_by_id(
+    id: int,
+    current_user=Depends(require_employee_or_admin),
+    db: Session = Depends(get_db)
+):
+    product = db.query(database_models.Product).filter(
+        database_models.Product.id == id
+    ).first()
+
+    if not product:
+        return {"message": "Product not found"}
+
+    return product
 
 @app.post("/products")
 async def add_product(
@@ -108,7 +133,9 @@ async def add_product(
     quantity: int = Form(...),
     category: str = Form(...),
     image: UploadFile = File(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(require_admin)
+    
 ):
     image_path = None
 
@@ -167,7 +194,8 @@ async def update_product(
     quantity: int = Form(...),
     category: str = Form(...),
     image: UploadFile = File(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(require_admin)
 ):
     db_product = db.query(database_models.Product).filter(
         database_models.Product.id == id
@@ -231,8 +259,12 @@ async def update_product(
     return db_product
 
 @app.delete("/products")
-def delete_product(id: int, db: Session = Depends(get_db)):
 
+def delete_product(
+    id: int,
+    current_user=Depends(require_admin),
+    db: Session = Depends(get_db)
+):
     db_product = db.query(database_models.Product).filter(
         database_models.Product.id == id
     ).first()
@@ -240,15 +272,16 @@ def delete_product(id: int, db: Session = Depends(get_db)):
     if not db_product:
         return {"message": "Product not found"}
 
-    # Delete image file if it exists
     if db_product.image:
 
-        image_path = os.path.join(UPLOAD_FOLDER, db_product.image)
+        image_path = os.path.join(
+            UPLOAD_FOLDER,
+            db_product.image
+        )
 
         if os.path.exists(image_path):
             os.remove(image_path)
 
-    # Delete product from database
     db.delete(db_product)
     db.commit()
 
